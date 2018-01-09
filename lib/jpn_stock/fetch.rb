@@ -22,7 +22,7 @@ module JpnStock
 			end
 
 			url = client.get
-			# => "https://kabuoji3.com/stock/4755/2018/"
+			# => "https://kabuoji3.com/stock/1321/2018/"
 
 			charset = nil
 			html = open(url) do |f|
@@ -30,6 +30,9 @@ module JpnStock
 				f.read
 			end
 
+			html_doc = Nokogiri::HTML.parse(html, nil, charset)
+
+=begin
 			begin
 				html_doc = Nokogiri::HTML.parse(html, nil, charset)
 			rescue
@@ -38,6 +41,7 @@ module JpnStock
 				STDOUT.puts 'Retry'
 				retry
 			end
+=end
 
 			@data = stock_data_table(html_doc)
 		end
@@ -50,7 +54,17 @@ module JpnStock
 			# => Nokogiri::XML::NodeSet
 
 			if nodesets.empty?
-				STDERR.puts 'Error'
+				STDERR.puts "#{__FILE__}:#{__LINE__}:Error: #{nodesets.class} is empty"
+
+=begin
+				html_doc.xpath('//div[@class="base_box_desc"]').children.each{ |nodeset|
+					nodeset.children.each{ |_noseset|
+						STDERR.print _noseset.text
+					}
+				}
+				STDERR.puts
+=end
+
 				return []
 			end
 
@@ -70,22 +84,26 @@ module JpnStock
 
 				elsif nodeset.node_name == 'tbody'
 					stock_data.push xpath_tr(nodeset.children)
-					# => ["2018-01-04", "1044", "1044", "1024", "1032", "8289400", "1032"]
+					# => ['2018-01-04', '23770', '24150', '23770', '24150', '611004', '24150']
 
 				elsif nodeset.node_name == 'tr'
 					stock_data.push xpath_th(nodeset.children)
-					# => ["2018-01-05", "1025.5", "1025.5", "988", "1013.5", "15142500", "1013.5"]
+					# => ['2018-01-05', '24280', '24390', '24170', '24370', '495513', '24370']
 
 				else
-					STDERR.puts 'Error'
+					STDERR.puts "#{__FILE__}:#{__LINE__}:Error: mismatch node name"
 					STDERR.puts nodeset.node_name
 					return []
 				end
 			}
 
 			unless keyname == @keyname[:expect]
-				STDERR.puts 'Error: mismatch keyname'
+				STDERR.puts "#{__FILE__}:#{__LINE__}:Error: mismatch keyname"
+
+=begin
 				STDERR.puts keyname
+=end
+
 				return []
 			end
 
@@ -94,8 +112,8 @@ module JpnStock
 			stock_data
 			# => [
 			   # 	['date', 'open', 'high', 'low', 'close', 'volume', 'adj_close'], 
-			   # 	["2018-01-04", "1044", "1044", "1024", "1032", "8289400", "1032"], 
-			   # 	["2018-01-05", "1025.5", "1025.5", "988", "1013.5", "15142500", "1013.5"]
+			   # 	['2018-01-04', '23770', '24150', '23770', '24150', '611004', '24150'], 
+			   # 	['2018-01-05', '24280', '24390', '24170', '24370', '495513', '24370']
 			   # ]
 		end
 

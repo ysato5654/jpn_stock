@@ -90,12 +90,12 @@ if $0 == __FILE__
 					}, 
 					{
 						:description => 'no year', 
-						:code => '4755', 
+						:code => '1322', 
 						:year => ''
 					}, 
 					{
 						:description => 'set code and year', 
-						:code => '4755', 
+						:code => '1322', 
 						:year => '2018'
 					}
 				]
