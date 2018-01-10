@@ -20,9 +20,10 @@ JpnStock.configure do |config|
 end
 
 stock = JpnStock::Fetch.new
-stock_data = stock.data
+stock.header[:english]
+# => ['date', 'open', 'high', 'low', 'close', 'volume', 'adj_close']
+stock.data
 # => [
-#	 	['date', 'open', 'high', 'low', 'close', 'volume', 'adj_close'],
 #	 	['2018-01-04', '23770', '24150', '23770', '24150', '611004', '24150']
 #	 ]
 ```
@@ -37,9 +38,10 @@ JpnStock.configure do |config|
 end
 
 stock = JpnStock::Fetch.new
-stock_data = stock.data
+stock.header[:english]
+# => ['date', 'open', 'high', 'low', 'close', 'volume', 'adj_close']
+stock.data
 # => [
-#	 	['date', 'open', 'high', 'low', 'close', 'volume', 'adj_close'], 
 #	 	['2017-01-04', '19790', '20100', '19780', '20080', '749647', '20080'], 
 #	 	['2017-01-05', '20100', '20120', '19960', '20020', '679991', '20020'], 
 #	 	['2017-01-06', '19850', '19980', '19830', '19950', '474555', '19950'], 

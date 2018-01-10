@@ -17,6 +17,8 @@ module JpnStock
 		DEFAULT_DAY   = nil
 		DEFAULT_MODE  = nil
 
+		MODE = ['year', 'month', 'day']
+
 		attr_accessor(*TARGET)
 
 		def self.extended(base)
