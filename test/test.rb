@@ -9,15 +9,59 @@ class Test
 	attr_reader :result
 
 	PARAM = {
+				# test for 'parse' method in fetch.rb
 				:test1 => {
 							:description => 'wrong year: 1900', 
 							:code => '1321', 
-							:year => '1900'
+							:year => '1900', 
+							:month => nil, 
+							:day => nil, 
+							:mode => 'year'
 						}, 
+				# test for 'parse' method in fetch.rb
 				:test2 => {
 							:description => 'wrong code: 999', 
 							:code => '999', 
-							:year => '2017'
+							:year => '2017', 
+							:month => nil, 
+							:day => nil, 
+							:mode => 'year'
+						}, 
+				# test for 'mode' in fetch.rb
+				:test3 => {
+							:description => 'unset month', 
+							:code => '1321', 
+							:year => '2018', 
+							:month => nil, 
+							:day => '05', 
+							:mode => 'day'
+						}, 
+				# test for 'mode' in fetch.rb
+				:test4 => {
+							:description => 'unset day', 
+							:code => '1321', 
+							:year => '2018', 
+							:month => '01', 
+							:day => nil, 
+							:mode => 'day'
+						}, 
+				# test for 'mode' in fetch.rb
+				:test5 => {
+							:description => 'wrong date: 2018-01-99', 
+							:code => '1321', 
+							:year => '2018', 
+							:month => '01', 
+							:day => '99', 
+							:mode => 'day'
+						}, 
+				# test for 'mode' in fetch.rb
+				:test6 => {
+							:description => 'fail search: 2018-01-06 -> this day is Saturday', 
+							:code => '1321', 
+							:year => '2018', 
+							:month => '01', 
+							:day => '06', 
+							:mode => 'day'
 						}
 			}
 
@@ -35,9 +79,15 @@ class Test
 			STDOUT.puts '  ' + val[:description]
 			STDOUT.puts '-----------------------'
 
+			# prevent from use before value
+			JpnStock.reset
+
 			JpnStock.configure do |config|
 				config.code = val[:code]
 				config.year = val[:year]
+				config.month = val[:month]
+				config.day = val[:day]
+				config.mode = val[:mode]
 			end
 
 			stock = JpnStock::Fetch.new
