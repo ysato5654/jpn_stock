@@ -8,13 +8,22 @@ require File.expand_path(File.dirname(__FILE__) + '/client')
 
 module JpnStock
 	class Fetch
+		attr_reader :header
+		# => {
+		   # 	:japanese => ['日付', '始値', '高値', '安値', '終値', '出来高', '終値調整'], 
+		   # 	:english => ['date', 'open', 'high', 'low', 'close', 'volume', 'adj_close']
+		   # }
 		attr_reader :data
+		# => [
+		   # 	['2018-01-04', '23770', '24150', '23770', '24150', '611004', '24150'], 
+		   # 	['2018-01-05', '24280', '24390', '24170', '24370', '495513', '24370']
+		   # ]
 
 		def initialize
+			@header = Array.new
 			@data = Array.new
 
 			client = JpnStock::Client.new
-			@keyname = client.stock_data_table_keyname
 
 			JpnStock.configure do |config|
 				client.code = config.code
@@ -43,11 +52,18 @@ module JpnStock
 			end
 =end
 
-			@data = stock_data_table(html_doc)
+			@header = client.stock_data_table_header
+			# => {
+			   # 	:japanese => ['日付', '始値', '高値', '安値', '終値', '出来高', '終値調整'], 
+			   # 	:english => ['date', 'open', 'high', 'low', 'close', 'volume', 'adj_close']
+			   # }
+
+			# pick up 'stock data table'
+			@data = parse(html_doc)
 		end
 
 		private
-		def stock_data_table html_doc
+		def parse html_doc
 			nodesets = html_doc.xpath('//table[@class="stock_table stock_data_table"]').children
 
 			# nodesets.class
@@ -68,8 +84,8 @@ module JpnStock
 				return []
 			end
 
-			keyname = Array.new
-			stock_data = Array.new
+			header = Array.new
+			data = Array.new
 
 			nodesets.each{ |nodeset|
 				# if node is not element, then skip
@@ -79,15 +95,15 @@ module JpnStock
 				# => Nokogiri::XML::Element
 
 				if nodeset.node_name == 'thead'
-					keyname = xpath_tr(nodeset.children)
+					header = xpath_tr(nodeset.children)
 					# => ['日付', '始値', '高値', '安値', '終値', '出来高', '終値調整']
 
 				elsif nodeset.node_name == 'tbody'
-					stock_data.push xpath_tr(nodeset.children)
+					data.push xpath_tr(nodeset.children)
 					# => ['2018-01-04', '23770', '24150', '23770', '24150', '611004', '24150']
 
 				elsif nodeset.node_name == 'tr'
-					stock_data.push xpath_th(nodeset.children)
+					data.push xpath_th(nodeset.children)
 					# => ['2018-01-05', '24280', '24390', '24170', '24370', '495513', '24370']
 
 				else
@@ -97,21 +113,20 @@ module JpnStock
 				end
 			}
 
-			unless keyname == @keyname[:expect]
-				STDERR.puts "#{__FILE__}:#{__LINE__}:Error: mismatch keyname"
+			unless header == @header[:japanese]
+				STDERR.puts "#{__FILE__}:#{__LINE__}:Error: mismatch header"
 
 =begin
-				STDERR.puts keyname
+				STDERR.puts header
 =end
 
 				return []
 			end
 
-			stock_data.unshift @keyname[:english]
+			header.clear
 
-			stock_data
+			data
 			# => [
-			   # 	['date', 'open', 'high', 'low', 'close', 'volume', 'adj_close'], 
 			   # 	['2018-01-04', '23770', '24150', '23770', '24150', '611004', '24150'], 
 			   # 	['2018-01-05', '24280', '24390', '24170', '24370', '495513', '24370']
 			   # ]
