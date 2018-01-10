@@ -3,13 +3,16 @@
 
 module JpnStock
 	class Client
-		attr_reader :url, :stock_data_table_keyname
-		attr_writer :code, :year
+		attr_reader :url
+		attr_reader :stock_data_table_header
+
+		attr_writer :code
+		attr_writer :year
 
 		def initialize
 			@url = ''
-			@stock_data_table_keyname = {
-											:expect => [
+			@stock_data_table_header = {
+											:japanese => [
 															'日付',
 															'始値',
 															'高値',
@@ -36,8 +39,6 @@ module JpnStock
 			@stock = stock
 		end
 
-		# reference: case of 4755 (Rakuten)
-		# => https://kabuoji3.com/stock/4755/2018/
 		public
 		def get
 			if @code.empty? and @year.empty?
@@ -51,11 +52,11 @@ module JpnStock
 			elsif !@code.empty? and @year.empty?
 				url = [@base, @stock, @code].join('/')
 				url += '/'
-				# => https://kabuoji3.com/stock/4755/
+				# => https://kabuoji3.com/stock/1321/
 			else
 				url = [@base, @stock, @code, @year].join('/')
 				url += '/'
-				# => https://kabuoji3.com/stock/4755/2018/
+				# => https://kabuoji3.com/stock/1321/2018/
 			end
 
 			url
@@ -90,12 +91,12 @@ if $0 == __FILE__
 					}, 
 					{
 						:description => 'no year', 
-						:code => '1322', 
+						:code => '1321', 
 						:year => ''
 					}, 
 					{
 						:description => 'set code and year', 
-						:code => '1322', 
+						:code => '1321', 
 						:year => '2018'
 					}
 				]
