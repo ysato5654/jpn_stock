@@ -11,42 +11,51 @@ class Test
 	PARAM = {
 				# test for 'parse' method in fetch.rb
 				:test1 => {
-							:description => 'wrong year: 1900', 
-							:code => '1321', 
-							:year => '1900', 
-							:month => nil, 
-							:day => nil, 
-							:mode => 'year'
+							:description => 'unset configure', 
+							:code => JpnStock::Configuration::DEFAULT_CODE, 
+							:year => JpnStock::Configuration::DEFAULT_YEAR, 
+							:month => JpnStock::Configuration::DEFAULT_MONTH, 
+							:day => JpnStock::Configuration::DEFAULT_DAY, 
+							:mode => JpnStock::Configuration::DEFAULT_MODE
 						}, 
 				# test for 'parse' method in fetch.rb
 				:test2 => {
+							:description => 'wrong year: 1900', 
+							:code => '1321', 
+							:year => '1900', 
+							:month => JpnStock::Configuration::DEFAULT_MONTH, 
+							:day => JpnStock::Configuration::DEFAULT_DAY, 
+							:mode => 'year'
+						}, 
+				# test for 'parse' method in fetch.rb
+				:test3 => {
 							:description => 'wrong code: 999', 
 							:code => '999', 
 							:year => '2017', 
-							:month => nil, 
-							:day => nil, 
+							:month => JpnStock::Configuration::DEFAULT_MONTH, 
+							:day => JpnStock::Configuration::DEFAULT_DAY, 
 							:mode => 'year'
 						}, 
 				# test for 'mode' in fetch.rb
-				:test3 => {
+				:test4 => {
 							:description => 'unset month', 
 							:code => '1321', 
 							:year => '2018', 
-							:month => nil, 
+							:month => JpnStock::Configuration::DEFAULT_MONTH, 
 							:day => '05', 
 							:mode => 'day'
 						}, 
 				# test for 'mode' in fetch.rb
-				:test4 => {
+				:test5 => {
 							:description => 'unset day', 
 							:code => '1321', 
 							:year => '2018', 
 							:month => '01', 
-							:day => nil, 
+							:day => JpnStock::Configuration::DEFAULT_DAY, 
 							:mode => 'day'
 						}, 
 				# test for 'mode' in fetch.rb
-				:test5 => {
+				:test6 => {
 							:description => 'wrong date: 2018-01-99', 
 							:code => '1321', 
 							:year => '2018', 
@@ -55,7 +64,7 @@ class Test
 							:mode => 'day'
 						}, 
 				# test for 'mode' in fetch.rb
-				:test6 => {
+				:test7 => {
 							:description => 'fail search: 2018-01-06 -> this day is Saturday', 
 							:code => '1321', 
 							:year => '2018', 
