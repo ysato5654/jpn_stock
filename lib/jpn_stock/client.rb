@@ -32,8 +32,8 @@ module JpnStock
 														]
 										}
 
-			@code = ''
-			@year = ''
+			@code = Configuration::DEFAULT_CODE
+			@year = Configuration::DEFAULT_CODE
 
 			@base = base
 			@stock = stock
@@ -76,6 +76,8 @@ end
 
 # example
 if $0 == __FILE__
+	require File.expand_path(File.dirname(__FILE__) + '/configuration')
+
 	client = JpnStock::Client.new
 
 	example = [

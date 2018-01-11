@@ -11,8 +11,8 @@ module JpnStock
 					:mode
 				].freeze
 
-		DEFAULT_CODE  = nil
-		DEFAULT_YEAR  = nil
+		DEFAULT_CODE  = ''
+		DEFAULT_YEAR  = ''
 		DEFAULT_MONTH = nil
 		DEFAULT_DAY   = nil
 		DEFAULT_MODE  = nil
